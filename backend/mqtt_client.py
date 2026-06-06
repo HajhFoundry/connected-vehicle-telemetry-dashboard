@@ -8,7 +8,7 @@ PORT = 1883
 TOPIC = "vehicle/telemetry"
 
 latest_telemetry = {}
-update_telemetry(payload)
+
 
 def on_connect(client, userdata, flags, rc):
     print("Connected to broker")
@@ -21,6 +21,7 @@ def on_message(client, userdata, msg):
     payload = json.loads(msg.payload.decode())
 
     latest_telemetry = payload
+    update_telemetry(payload)
 
     print("\nTelemetry Received")
     print(payload)
