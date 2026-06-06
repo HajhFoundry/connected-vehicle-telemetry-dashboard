@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+streamlit
+paho-mqtt
+requests
+pytest
+httpx
+pydantic
+python-dotenv
