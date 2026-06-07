@@ -1,0 +1,7 @@
+{
+    "vehicle_count": 5,
+    "low_battery_mode": false,
+    "poor_signal_mode": false,
+    "ota_campaign_mode": false,
+    "offline_mode": false
+}
