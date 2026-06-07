@@ -2,9 +2,13 @@ from fastapi import FastAPI
 
 from backend.telemetry_store import get_latest_telemetry
 from backend.alert_engine import generate_alerts, calculate_health_score
+from backend.mqtt_client import start_mqtt_client
 
 app = FastAPI()
 
+@app.on_event("startup")
+def startup_event():
+    start_mqtt_client()
 
 @app.get("/")
 def root():
