@@ -1,18 +1,19 @@
 import time
 
+import pandas as pd
 import requests
 import streamlit as st
 
 API_BASE_URL = "http://127.0.0.1:8000"
 
 st.set_page_config(
-    page_title="Connected Vehicle Telemetry Dashboard",
+    page_title="Connected Vehicle Fleet Dashboard",
     page_icon="🚗",
     layout="wide",
 )
 
-st.title("🚗 Connected Vehicle Telemetry Dashboard")
-st.caption("Real-time MQTT vehicle telemetry, health monitoring, and alert visualization")
+st.title("🚗 Connected Vehicle Fleet Telemetry Dashboard")
+st.caption("Real-time MQTT fleet telemetry, vehicle health monitoring, and alert visualization")
 
 
 def get_api_data(endpoint):
@@ -24,9 +25,7 @@ def get_api_data(endpoint):
         return None
 
 
-telemetry = get_api_data("/telemetry")
-vehicle_health = get_api_data("/vehicle-health")
-alerts_response = get_api_data("/alerts")
+fleet_data = get_api_data("/fleet")
 service_health = get_api_data("/health")
 
 if service_health:
@@ -34,59 +33,64 @@ if service_health:
 else:
     st.error("Backend Service: DOWN")
 
-if not telemetry:
-    st.warning("No telemetry received yet. Start the vehicle simulator and FastAPI backend.")
+if not fleet_data:
+    st.warning("No fleet telemetry received yet. Start FastAPI and the vehicle simulator.")
 else:
-    col1, col2, col3, col4 = st.columns(4)
+    vehicles = list(fleet_data.values())
+    df = pd.DataFrame(vehicles)
 
-    col1.metric("Vehicle ID", telemetry.get("vehicle_id", "N/A"))
-    col2.metric("Speed", f"{telemetry.get('speed', 0)} km/h")
-    col3.metric("Battery", f"{telemetry.get('battery_level', 0)}%")
-    col4.metric("Signal", f"{telemetry.get('signal_strength', 0)} dBm")
+    fleet_size = len(df)
+    online_count = len(df[df["network_status"] == "CONNECTED"])
+    offline_count = len(df[df["network_status"] == "DISCONNECTED"])
+    low_battery_count = len(df[df["battery_level"] < 25])
+    poor_signal_count = len(df[df["signal_strength"] < -100])
+
+    col1, col2, col3, col4, col5 = st.columns(5)
+
+    col1.metric("Fleet Size", fleet_size)
+    col2.metric("Online", online_count)
+    col3.metric("Offline", offline_count)
+    col4.metric("Low Battery", low_battery_count)
+    col5.metric("Poor Signal", poor_signal_count)
 
     st.divider()
 
-    col5, col6, col7 = st.columns(3)
-
-    col5.metric("Network Status", telemetry.get("network_status", "N/A"))
-    col6.metric("OTA Status", telemetry.get("ota_status", "N/A"))
-
-    if vehicle_health:
-        col7.metric("Health Score", vehicle_health.get("health_score", 0))
+    st.subheader("Fleet Telemetry Table")
+    st.dataframe(
+        df[
+            [
+                "vehicle_id",
+                "speed",
+                "battery_level",
+                "signal_strength",
+                "network_status",
+                "ota_status",
+                "timestamp",
+            ]
+        ],
+        use_container_width=True,
+    )
 
     st.divider()
 
-    st.subheader("Vehicle Health")
+    st.subheader("Vehicles Requiring Attention")
 
-    if vehicle_health:
-        status = vehicle_health.get("vehicle_status", "UNKNOWN")
+    attention_df = df[
+        (df["network_status"] == "DISCONNECTED")
+        | (df["battery_level"] < 25)
+        | (df["signal_strength"] < -100)
+    ]
 
-        if status == "GOOD":
-            st.success(f"Vehicle Status: {status}")
-        elif status == "WARNING":
-            st.warning(f"Vehicle Status: {status}")
-        elif status == "CRITICAL":
-            st.error(f"Vehicle Status: {status}")
-        else:
-            st.info(f"Vehicle Status: {status}")
-
-    st.subheader("Active Alerts")
-
-    alerts = []
-
-    if alerts_response:
-        alerts = alerts_response.get("alerts", [])
-
-    if alerts:
-        for alert in alerts:
-            st.error(alert)
+    if attention_df.empty:
+        st.success("No vehicles currently require attention.")
     else:
-        st.success("No active alerts")
+        st.warning(f"{len(attention_df)} vehicle(s) require attention.")
+        st.dataframe(attention_df, use_container_width=True)
 
     st.divider()
 
-    st.subheader("Raw Telemetry Payload")
-    st.json(telemetry)
+    st.subheader("Raw Fleet Payload")
+    st.json(fleet_data)
 
 time.sleep(3)
 st.rerun()
