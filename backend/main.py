@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from backend.telemetry_store import get_latest_telemetry
+from backend.telemetry_store import get_latest_telemetry, get_fleet_telemetry
 from backend.alert_engine import generate_alerts, calculate_health_score
 from backend.mqtt_client import start_mqtt_client
 
@@ -58,3 +58,7 @@ def vehicle_health():
         "health_score": health_score,
         "alerts": alerts_list,
     }
+
+@app.get("/fleet")
+def fleet():
+    return get_fleet_telemetry()
