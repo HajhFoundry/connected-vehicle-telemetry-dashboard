@@ -1,30 +1,112 @@
 # Connected Vehicle Fleet Telemetry Dashboard
 
-A portfolio project demonstrating connected vehicle telemetry simulation, MQTT communication, fleet monitoring, vehicle health scoring, alert generation, automated testing, and CI/CD.
+![Fleet Dashboard](docs/images/fleet_dashboard.png)
+
+## Overview
+
+A Connected Vehicle Fleet Telemetry Platform that simulates real-time vehicle telemetry using MQTT, processes telemetry through a FastAPI backend, evaluates vehicle health and alerts, and visualizes fleet operations through a Streamlit dashboard.
+
+This project demonstrates concepts commonly used in:
+
+- Connected Vehicle Systems
+- Telematics Platforms
+- OTA Monitoring
+- Fleet Operations
+- IoT Telemetry
+- Systems Integration
+- Vehicle Health Monitoring
+
+---
+
+## Technology Stack
+
+- Python
+- MQTT
+- FastAPI
+- Streamlit
+- Pytest
+- GitHub Actions
+- REST APIs
+
+---
 
 ## Features
 
 - Multi-Vehicle Fleet Simulator
-- MQTT Telemetry
-- FastAPI Backend
-- Streamlit Dashboard
+- MQTT Telemetry Publishing
+- FastAPI Backend Services
+- Fleet Health Monitoring
 - Vehicle Health Scoring
-- Alert Engine
-- Pytest Automation
-- GitHub Actions CI/CD
+- Alert Generation Engine
+- OTA Status Monitoring
+- Real-Time Dashboard
+- Automated Testing with Pytest
+- CI/CD with GitHub Actions
 - Configurable Fleet Scenarios
 
-## Run
+---
 
+## Project Architecture
+
+Vehicle Simulator
+→ MQTT Broker
+→ FastAPI Backend
+→ Alert Engine
+→ Health Engine
+→ REST APIs
+→ Streamlit Dashboard
+
+---
+
+## Run Demo
+
+```bash
 run_demo.bat
+```
 
-## Stop
+## Stop Demo
 
+```bash
 stop_demo.bat
+```
 
-## Tests
+## Run Tests
 
+```bash
 run_tests.bat
+```
 
-# connected-vehicle-telemetry-dashboard
-Connected Vehicle Telemetry Dashboard using MQTT, FastAPI, and Streamlit for real-time vehicle health monitoring, connectivity analytics, alert generation, and cloud integration simulation.
+---
+
+## Sample Fleet Metrics
+
+- Fleet Size
+- Online Vehicles
+- Offline Vehicles
+- Low Battery Vehicles
+- Poor Signal Vehicles
+- OTA Campaign Status
+- Vehicle Health Score
+
+---
+
+## CI/CD
+
+GitHub Actions automatically:
+
+- Installs dependencies
+- Runs Pytest test suite
+- Validates API functionality
+- Verifies project health on every push
+
+---
+
+## Repository Purpose
+
+This portfolio project was created to demonstrate practical skills relevant to:
+
+- Connected Vehicle Integration Engineer
+- OTA Integration Engineer
+- Telematics Engineer
+- Systems Integration Engineer
+- Technical Program Manager (Connected Systems)
